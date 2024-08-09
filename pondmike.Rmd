@@ -1,0 +1,92 @@
+---
+title: "ponderadamike"
+author: "Mike"
+date: "2024-08-09"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# ponderadamike1
+
+## Tabela 1:
+
+### Carregamento e preparaçõ dos dados:
+
+```{r}
+dados <- (store_final)
+head(dados)
+```
+
+```{r}
+tabela <- str(dados)
+print(tabela)
+```
+
+### Resumo estatística e descrição dos dados
+
+```{r}
+estat <- summary(dados)
+print(estat)
+```
+
+### Descrição das variáveis
+
+nome_loja = Nome do estabelecimento
+
+regiao = localização exata do estabelecmento
+
+diretoria = região do estabelecimento
+
+data_inauguração = data da inauguração do estabelecimento
+
+
+### Análise univariada
+
+```{r}
+library(dplyr)
+library(ggplot2)
+
+# Corrigir o formato de data
+dados$ano_inauguracao <- as.Date(dados$data_inauguracao, "%d/%m/%Y")
+dados$ano <- format(dados$ano_inauguracao, "%Y")
+
+# Criar tabela2 com o ano correto
+tabela2 <- data.frame(nome_loja = dados$nome_loja, ano = dados$ano)
+
+# Agrupar e resumir os dados
+inaug <- tabela2 %>%
+  group_by(ano) %>%
+  summarise(qtd_inauguracoes = n())
+
+# Plotar o gráfico
+ggplot(inaug, aes(x = ano, y = qtd_inauguracoes)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(title = "Inaugurações por Ano", 
+       x = "Ano de Inauguração", 
+       y = "Quantidade de Inaugurações") +
+  theme_minimal()
+```
+
+```{r}
+# Dados
+dados <- data.frame(
+  nome_loja = c("SP Capital Sul_59", "SP Capital Sul_30", "SP Capital Sul_17", "SP Capital Sul_9", "SP Capital Sul_97"),
+  regiao = c("SP Capital Sul", "SP Capital Sul", "SP Capital Sul", "SP Capital Sul", "SP Capital Sul"),
+  diretoria = c("Grande SP", "Grande SP", "Grande SP", "Grande SP", "Grande SP"),
+  data_inauguracao = as.Date(c("2020-08-09", "2000-03-05", "2019-02-28", "2001-05-16", "2017-07-12"))
+)
+
+# Contar o número de lojas por região
+contagem_lojas <- dados %>%
+  group_by(regiao) %>%
+  summarise(numero_lojas = n())
+
+# Criar gráfico de barras
+ggplot(contagem_lojas, aes(x = regiao, y = numero_lojas, fill = regiao)) +
+  geom_bar(stat = "identity") +
+  theme_minimal() +
+  labs(title = "Número de Lojas por Região", x = "Região", y = "Número de Lojas")
+```
